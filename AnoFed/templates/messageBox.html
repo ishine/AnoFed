@@ -1,0 +1,13 @@
+{% for t,f in token %}
+	{% if "n" in f %}
+		<span style="background-color:yellow">
+			{{ t }}<button onclick="clearColor(this)">x</button>
+		</span>
+	{% elif "v" in f %}
+		<span style="background-color:blue">
+			{{ t }}<button onclick="clearColor(this)">x</button>
+		</span>
+	{% else %}
+		<span>{{ t }}</span>
+	{% endif %}
+{% endfor %}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>中文NLP标注工具-分词结果反馈</title>
+	    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css" crossorigin="anonymous"
+  />
+		{% load static %}
+		<link rel="stylesheet" type="text/css" href="{% static "/annotation.css" %}">
+		<script type="text/javascript">
+			var curProjectName = "";
+			var curProjId = "-1";
+		  	window.onload=function(){
+			    var oDemo = document.getElementById("otherDemo");
+			    var oDiv1 = document.getElementById("Demo1");
+			    var oDiv2 = document.getElementById("Demo2");
+			    oDiv1.style.display = "none";
+			    oDiv2.style.display = "none";
+			    var displayOtherDemo = false;
+
+			    $.get("/updateProjList/",{},function(data,status){$("#projlist").html(data);})
+
+			    oDemo.onclick = function () {
+			    	if(displayOtherDemo == false){
+			      		oDiv1.style.display = "block";
+			      		oDiv2.style.display = "block";
+			      		displayOtherDemo = true;
+			      	}else{
+			      		displayOtherDemo = false;
+			      		oDiv1.style.display = "none";
+			      		oDiv2.style.display = "none";
+			      	}
+			    };
+		  };
+		</script>
+	</head>
+
+	<body>
+
+		<div class="logo_left"><img src="{% static "/cat.png" %}" width="150"></div>
+
+		<div class="side_left">
+			<div class="main" id="curProjectName" style="color: #f3f3f3">未选择项目</div>
+			<div style="cursor:pointer">
+                <span id="projlist">
+                	<!------>
+                </span>
+            </div>
+		</div>
+
+
+		<div class="header">
+			<div class="navitem">
+				<div id="save_json" class="btn-success"  onclick="fileUpLoad()">
+					<input type="file" id="fileupload"/>
+					<span>上传文本</span>
+				</div>
+			</div>
+			<div class="navitem" id="otherDemo">
+				<div class="btn-success">
+					<span>其他Demo</span>
+				</div>
+			</div>
+			<div class="navitem" id="Demo1">
+				<div class="btn-success">
+					<span>功能1</span>
+				</div>
+			</div>
+			<div class="navitem" id="Demo2">
+				<div class="btn-success">
+					<span>功能2</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="messagebox">
+			<div class="messagecard" id="mainPassage">
+				<!------>
+  			</div>
+  		</div>
+
+		<form class="addbox" style="display: none;" id="addbox1">
+			添加词组<br>
+			<span id="selectedword"></span><br>
+			词频:<br>
+			<input type="text" id="wordFreq" value="0" style="width: 70px"><br>
+			词性:<br>
+			<select id="pos" name="pos">
+		    	<option value="n">n(普通名词)	</option>
+		    	<option value="f">f(方位名词)</option>
+		    	<option value="s">s(处所名词)</option>
+		    	<option value="unknowen">u(未知词性)</option>
+    		</select><br><br>
+			<div class="navitem" id="posSelectbox" >
+				<div class="btn-success" onclick="hidebox()">
+					<span>取消</span>
+				</div>
+			</div>
+			<div class="navitem">
+				<div class="btn-success" onclick="addWord()">
+					<span>确认</span>
+				</div>
+			</div>
+		</form>
+
+
+  		<div class="side_right_searchbox"></div>
+  		<div class="side_right">
+  			<table id="tokenForm">
+  				<!------>
+  			</table>
+  		</div>
+
+  		<script type="text/javascript">
+  			function fileUpLoad(){
+		    	document.getElementById('fileupload').click();
+		    }
+			var getFileContent = function (fileInput, callback) {
+	            if (fileInput.files && fileInput.files.length > 0 && fileInput.files[0].size > 0) {
+	                var file = fileInput.files[0];
+	                if (window.FileReader) {
+	                    var reader = new FileReader();
+	                    reader.onloadend = function (evt) {
+	                        if (evt.target.readyState == FileReader.DONE) {
+	                            callback(evt.target.result);
+	                        }
+	                    };
+	                    reader.readAsText(file, 'utf-8');
+	                }
+	            }
+	        };
+	        document.getElementById('fileupload').onchange = function () {
+		        getFileContent(this, function (str) {
+		            uploadedtxt = str;
+		           	//str = str.split("\n");
+		    		$.get("/updateMessageBox/",{"str":str},function(data,status){$("#mainPassage").html(data);})
+		        });
+		    };
+
+		    function hidebox(){
+				document.getElementById("addbox1").style.display="none";
+			}
+
+			function displaybox(word,cnt){
+				document.getElementById("addbox1").style.display="block";
+				document.getElementById("selectedword").innerHTML=word;
+				document.getElementById("wordFreq").value=cnt;
+			}
+
+		    function addWord () {
+		    	highlightWord();
+		    	var pos = document.getElementById("pos").value;
+		    	var freq = document.getElementById("wordFreq").value;
+		    	var token = document.getElementById("selectedword").innerHTML;
+		    	var context = {"pos":pos,"freq":freq,"token":token,"pid":curProjId};
+		    	$.get("/createToken/", context)
+		    	$.get("/updateTokenForm/",{"pid":curProjId},function(data,status){$("#tokenForm").html(data);})
+		    	hidebox();
+		    };
+
+		    function clearColor(btn) {
+		    	btn.style.display="none";
+		    	btn.parentNode.style.backgroundColor="";
+		    }
+  		</script>
+	</body>
+</html>

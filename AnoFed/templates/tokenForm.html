@@ -1,0 +1,14 @@
+<tbody>
+	<tr>
+		<th style="text-align: center">word</th>
+		<th style="text-align: center">ferq</th>
+		<th style="text-align: center">POS</th>
+	</tr>
+	{% for obj in queryrsts %}
+		<tr>
+			<td>{{ obj.tokenizer }}</td>
+			<td>{{ obj.freq }}</td>
+			<td>{{ obj.pos }}</td>
+		</tr>
+	{% endfor %}
+</tbody>

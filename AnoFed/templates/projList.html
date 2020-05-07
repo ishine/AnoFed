@@ -1,0 +1,6 @@
+{% for obj in queryrsts %}
+	<span class="item" data-preview-id="{{ obj.id }}" onclick="selectProj(this)">
+		<span class="icon"><div class="iconbutton"></div></span>
+		<span class="name">{{ obj.name }}</span>
+	</span>
+{% endfor %}
