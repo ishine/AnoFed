@@ -16,7 +16,7 @@
 <br><img src="https://github.com/vacaly/AnoFed/blob/master/pics/5.png" alt="alt text" width="600"><br>
 删除成功后，出错句子和错分词语被保存到数据库。
 
-## Build & Run
+# Build & Run
 - 用适合自己系统的方式安装 Django 和 mysqlclient
 - 创建 Django 项目
   ```bash
@@ -78,7 +78,7 @@
   $ python manage.py runserver
   ```
   在浏览器打开http://0.0.0.0:8000/func1/ 进行标注，http://0.0.0.0:8000/func2/ 进行反馈
-## 构想
+# 构想
 最近会持续开发这个项目，六月前会有一次主要更新
 - [ ] 关系标注功能（同义、反义关系，实体间关系）
 - [ ] 分词器和关系提取器进一步模块化，从网页模版代码中独立出来
